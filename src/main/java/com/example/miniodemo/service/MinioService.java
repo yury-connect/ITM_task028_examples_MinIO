@@ -6,6 +6,7 @@ import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class MinioService {
 
     private final MinioClient minioClient;
+    @Qualifier("minioBucket") // работает и без него
     private final String bucketName;
 
     @SneakyThrows

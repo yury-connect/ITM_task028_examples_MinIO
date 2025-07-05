@@ -23,6 +23,9 @@ mvn spring-boot:run
 ```bash
 curl -X POST -F "file=@/path/to/your/file.jpg" http://localhost:8080/api/files 
 ```
+```bash
+curl -X POST -F "file=@/in_out_src_folder/file.jpg" http://localhost:8080/api/files 
+```
 
 #### Скачивание файла:
 ```bash
