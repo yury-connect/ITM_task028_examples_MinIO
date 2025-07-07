@@ -1,20 +1,14 @@
 package com.example.miniodemo.service;
 
 import io.minio.*;
-import io.minio.errors.*;
 import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 //@Slf4j
@@ -26,7 +20,7 @@ public class MinioService {
     @Qualifier("minioBucket") // работает и без него
     private final String bucketName;
 
-    // Вместо @Slf4j
+    // Вместо @Slf4j, т.к. lombok.* надежно отвалился!
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MinioService.class);
 
 
@@ -102,17 +96,4 @@ public class MinioService {
             throw new RuntimeException(e);
         }
     }
-
-    /*
-    // Добавьте в сервис метод для установки политики
-    @SneakyThrows
-    public void setBucketPolicy() {
-        String policyJson = // загрузите содержимое minio-policy.json
-                minioClient.setBucketPolicy(
-                        SetBucketPolicyArgs.builder()
-                                .bucket(bucketName)
-                                .config(policyJson)
-                                .build());
-    }
-    */
 }
