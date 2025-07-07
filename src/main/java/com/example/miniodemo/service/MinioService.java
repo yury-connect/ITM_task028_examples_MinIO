@@ -6,67 +6,101 @@ import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-@Slf4j
+//@Slf4j
 @Service
-@RequiredArgsConstructor
 public class MinioService {
 
     private final MinioClient minioClient;
+
     @Qualifier("minioBucket") // работает и без него
     private final String bucketName;
 
-    @SneakyThrows
+    // Вместо @Slf4j
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MinioService.class);
+
+
+    public MinioService(MinioClient minioClient, String bucketName) {
+        this.minioClient = minioClient;
+        this.bucketName = bucketName;
+    }
+
+
     public void ensureBucketExists() {
-        if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
-            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-            log.info("Bucket created: {}", bucketName);
+        try {
+            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+                log.info("Bucket created: {}", bucketName);
+            }
+        } catch (Exception e) {
+            log.error("Error creating bucket: {}", bucketName, e);
+            throw new RuntimeException(e);
         }
     }
 
-    @SneakyThrows
     public String uploadFile(MultipartFile file) {
         ensureBucketExists();
         String objectName = file.getOriginalFilename();
 
-        minioClient.putObject(
-                PutObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(objectName)
-                        .stream(file.getInputStream(), file.getSize(), -1)
-                        .contentType(file.getContentType())
-                        .build());
+        try {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .stream(file.getInputStream(), file.getSize(), -1)
+                            .contentType(file.getContentType())
+                            .build());
+        } catch (Exception e) {
+            log.error("Error uploading file: {}", objectName, e);
+            throw new RuntimeException(e);
+        }
 
         return objectName;
     }
 
-    @SneakyThrows
     public InputStream downloadFile(String objectName) {
-        return minioClient.getObject(
-                GetObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(objectName)
-                        .build());
+        try {
+            return minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build());
+        } catch (Exception e) {
+            log.error("Error downloading file: {}", objectName, e);
+            throw new RuntimeException(e);
+        }
     }
 
-    @SneakyThrows
     public void deleteFile(String objectName) {
-        minioClient.removeObject(
-                RemoveObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(objectName)
-                        .build());
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build());
+        } catch (Exception e) {
+            log.error("Error deleting file: {}", objectName, e);
+            throw new RuntimeException(e);
+        }
     }
 
-    @SneakyThrows
     public List<Bucket> listBuckets() {
-        return minioClient.listBuckets();
+        try {
+            return minioClient.listBuckets();
+        } catch (Exception e) {
+            log.error("Error listing buckets", e);
+            throw new RuntimeException(e);
+        }
     }
 
     /*

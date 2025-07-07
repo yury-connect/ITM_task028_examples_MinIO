@@ -11,12 +11,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/files")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class FileController {
 
     private final MinioService minioService;
+
+
+    public FileController(MinioService minioService) {
+        this.minioService = minioService;
+    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {

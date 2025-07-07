@@ -66,15 +66,29 @@ curl.exe -o "in_out_src_folder/DownLoad/my_file.jpg" "http://localhost:8080/api/
 
 ---
 ### Удаление файла:
+
+Для команды `Invoke-WebRequest`
 ```bash
-curl -X DELETE http://localhost:8080/api/files/filename.jpg
+Invoke-WebRequest -Uri "http://localhost:8080/api/files/file.jpg" -Method DELETE
 ```
 
+Или коротко:
+```bash
+iwr http://localhost:8080/api/files/file.jpg -Method DELETE
+````
+
+Либо
+```bash
+curl.exe -X DELETE http://localhost:8080/api/files/file.jpg
+```
+
+---
 ### Список бакетов:
 ```bash
 curl.exe -O http://localhost:8080/api/files/file.jpg
 ```
 
+---
 ### Получение списка файлов:
 
 
