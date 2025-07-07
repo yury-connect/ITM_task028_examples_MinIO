@@ -91,6 +91,11 @@ curl.exe -O http://localhost:8080/api/files/file.jpg
 ---
 ### Получение списка файлов:
 
+---
+#### [Ссылка](https://lunar-equinox-676595.postman.co/workspace/ITM_Yury_Workspace~8f191f88-e8ec-40af-b710-248189b66b12/collection/8967691-6fed959b-969e-4a1a-a070-37388fae7ce1?action=share&creator=8967691) на коллекцию запросов в **Postman**
+
+---
+
 
 
 
