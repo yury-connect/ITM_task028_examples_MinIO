@@ -94,6 +94,8 @@ curl.exe -O http://localhost:8080/api/files/file.jpg
 ---
 #### [Ссылка](https://lunar-equinox-676595.postman.co/workspace/ITM_Yury_Workspace~8f191f88-e8ec-40af-b710-248189b66b12/collection/8967691-6fed959b-969e-4a1a-a070-37388fae7ce1?action=share&creator=8967691) на коллекцию запросов в **Postman**
 
+#### [Ссылка](https://github.com/yury-connect/ITM_task026_Java_Podgotovka_k_INTERVJU/blob/main/Documents/TECHNOLOGIES/S3/MinIO/MinIO_info.md) на теорию по **MinIO**  
+
 ---
 
 
