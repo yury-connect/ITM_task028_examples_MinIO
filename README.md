@@ -8,41 +8,74 @@
 
 ---
 ## Запуск и тестирование
-### 1. Запустите MinIO через Docker:
+
+## 1. Запустите MinIO через Docker:
 ```bash
 docker run -p 9000:9000 -p 9001:9001 minio/minio server /data --console-address ":9001"
 ````
 
-### 2. Запустите приложение:
+---
+## 2. Запустите приложение:
 ```bash
 mvn spring-boot:run
 ```
 
-### 3. Тестируйте API:
-#### Загрузка файла:
+---
+## 3. Тестируйте API:
+
+### Убедитесь, что файл существует:
 ```bash
-curl -X POST -F "file=@/path/to/your/file.jpg" http://localhost:8080/api/files 
-```
-```bash
-curl -X POST -F "file=@/in_out_src_folder/file.jpg" http://localhost:8080/api/files 
+ Test-Path "in_out_src_folder/UpLoad/file.jpg"
 ```
 
-#### Скачивание файла:
+---
+### Загрузка файла:
+Перейти в корень в `powershell` проекта и выполнить:
+```powershell
+curl.exe -X POST -F "file=@in_out_src_folder/UpLoad/file.jpg" http://localhost:8080/api/files
+```
+тот-же эффект через `CMD`
 ```bash
-curl -OJ http://localhost:8080/api/files/filename.jpg
+curl.exe -X POST -F "file=@in_out_src_folder/UpLoad/file.jpg" http://localhost:8080/api/files
 ```
 
-#### Удаление файла:
+---
+### Скачивание файла:
+1. Использование wget (аналог в PowerShell):
+```bash
+Invoke-WebRequest -Uri "http://localhost:8080/api/files/file.jpg" -OutFile "in_out_src_folder/DownLoad/file.jpg"
+```
+
+2. Явное указание curl.exe с полным путем:
+
+Указание полного пути для сохранения (лучший способ)
+```bash
+C:\Windows\System32\curl.exe -o "C:\Users\Yury\IdeaProjects\IT-Mentor\ITM_tasks\ITM_task028_examples_MinIO\in_out_src_folder\DownLoad\file.jpg" http://localhost:8080/api/files/file.jpg
+```
+
+Относительный путь _(если запускаете из корня проекта)_
+```bash
+C:\Windows\System32\curl.exe -o "in_out_src_folder\DownLoad\file.jpg" http://localhost:8080/api/files/file.jpg 
+```
+Почему -O не работает как нужно: Флаг -O (большая латинская O) в curl всегда сохраняет файл в текущую директорию с оригинальным именем. Для указания пути нужно использовать -o (маленькая латинская o).
+
+3. Если нужно сохранить под другим именем:
+```bash
+curl.exe -o "in_out_src_folder/DownLoad/my_file.jpg" "http://localhost:8080/api/files/file.jpg"
+```
+
+---
+### Удаление файла:
 ```bash
 curl -X DELETE http://localhost:8080/api/files/filename.jpg
 ```
 
-#### Список бакетов:
+### Список бакетов:
 ```bash
-curl http://localhost:8080/api/files/buckets
+curl.exe -O http://localhost:8080/api/files/file.jpg
 ```
 
-#### Получение списка файлов:
+### Получение списка файлов:
 
 
 
