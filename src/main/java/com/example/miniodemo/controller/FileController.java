@@ -1,7 +1,6 @@
 package com.example.miniodemo.controller;
 
 import com.example.miniodemo.service.MinioService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -26,9 +26,18 @@ public class FileController {
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        String objectName = minioService.uploadFile(file);
-        return ResponseEntity.ok("File uploaded: " + objectName);
+    public ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> fileList) {
+        if (fileList == null || fileList.isEmpty()) {
+            return ResponseEntity.badRequest().body("No files uploaded");
+        }
+
+        StringBuilder results = new StringBuilder();
+        for (MultipartFile file : fileList) {
+            String result = minioService.uploadFile(file);
+            results.append("File uploaded: ").append(result).append("\n");
+        }
+
+        return ResponseEntity.ok(results.toString());
     }
 
     @GetMapping("/{objectName}")
@@ -47,10 +56,19 @@ public class FileController {
     }
 
     @GetMapping("/buckets")
-    public ResponseEntity<List<String>> listBuckets() {
+    public ResponseEntity<List<Map<String, String>>> listBuckets() {
         var buckets = minioService.listBuckets().stream()
-                .map(b -> b.name())
+                .map(b -> Map.of(
+                        "name", b.name(),
+                        "creationDate", b.creationDate().toString()
+                ))
                 .toList();
         return ResponseEntity.ok(buckets);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<String>> listFiles() {
+        List<String> files = minioService.listFiles();
+        return ResponseEntity.ok(files);
     }
 }

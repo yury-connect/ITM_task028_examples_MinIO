@@ -2,6 +2,7 @@ package com.example.miniodemo.service;
 
 import io.minio.*;
 import io.minio.messages.Bucket;
+import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 //@Slf4j
 @Service
@@ -93,6 +95,30 @@ public class MinioService {
             return minioClient.listBuckets();
         } catch (Exception e) {
             log.error("Error listing buckets", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    // возвращает список всех файлов (объектов) в бакете
+    public List<String> listFiles() {
+        try {
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder().bucket(bucketName).build()
+            );
+
+            return StreamSupport.stream(results.spliterator(), false)
+                    .map(itemResult -> {
+                        try {
+                            return itemResult.get().objectName();
+                        } catch (Exception e) {
+                            throw new RuntimeException("Error reading object name", e);
+                        }
+                    })
+                    .toList();
+
+        } catch (Exception e) {
+            log.error("Error listing files in bucket: {}", bucketName, e);
             throw new RuntimeException(e);
         }
     }
