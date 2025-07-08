@@ -121,4 +121,12 @@ minio:
 ```
 
 ---
+# Зайти через Web - интерфейс: 
+###### Вводим данные из _конфигурации_ `application.yml`:
+- URL: [http://localhost:9001/](http://localhost:9001/browser/my-bucket)
+- Username: `minioadmin`
+- Password: `minioadmin`
 
+Web - интерфейс позволяет работать с загруженными файлами и бакетами.
+
+---
